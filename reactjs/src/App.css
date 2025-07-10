@@ -1,0 +1,13 @@
+.main-content {
+    border: 1px solid;
+    padding: 1rem;
+    margin: 5rem auto;
+    width: 30rem;
+    max-width: 80%;
+}
+
+.button {  
+    margin: 0 auto;
+    display: block;
+    width: 150px;
+}

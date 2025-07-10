@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  database:
+    image: mongo:latest
+    container_name: database
+    ports:
+      - "7017:27017"
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_DATABASE: auth
+    volumes:
+       - ./mongodb/auth_data:/data/db
+       - ./mongodb/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - auth
+  
+  app:
+    build:
+      context: ./auth
+      dockerfile: Dockerfile
+    container_name: auth
+    ports:
+      - "5000:5000" 
+    depends_on:
+      - database
+    env_file:
+      - .env
+    networks:
+      - auth
+
+networks:
+  auth:
+    driver: bridge
