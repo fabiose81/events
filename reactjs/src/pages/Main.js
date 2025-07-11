@@ -1,19 +1,22 @@
 import React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { validateToken } from '../utils/Validade'
+import { MyContext } from '../utils/MyContext';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Image from 'react-bootstrap/Image';
 
 const Main = ({ children }) => {
 
+    const contextValue = useContext(MyContext);
     const navigate = useNavigate();
     const [username, setUsername] = useState();
-
+    
     const loadUser = () => {
         const token = validateToken();
         if (token) {
+            contextValue.token = token;
             setUsername(token.username);
         } else {
             navigate("/");
@@ -22,7 +25,8 @@ const Main = ({ children }) => {
 
     useEffect(() => {
         loadUser();
-    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <>

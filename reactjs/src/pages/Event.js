@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import Main from './Main';
 import ListGroup from 'react-bootstrap/ListGroup';
 import Alert from 'react-bootstrap/Alert';
@@ -9,9 +9,11 @@ import Button from 'react-bootstrap/Button';
 import ModalComponent from '../components/ModalComponent'
 import { getEvents, addEvent, deleteEvent } from '../service/Request'
 import { setMessageState } from '../utils/UIUtils'
+import { MyContext } from '../utils/MyContext';
 
 const Event = () => {
 
+    const contextValue = useContext(MyContext);
     const [events, setEvents] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [description, setDescription] = useState('');
@@ -20,7 +22,7 @@ const Event = () => {
         label: '',
         variant: ''
     });
-
+    
     const loadEvents = () => {
         setShowModal(true);
         getEvents()
@@ -60,8 +62,11 @@ const Event = () => {
     }
 
     useEffect(() => {
-        loadEvents();
-    }, []);
+        if (contextValue.token) {
+            loadEvents();
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[]);
 
     return (
         <>

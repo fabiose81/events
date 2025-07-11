@@ -18,5 +18,5 @@ data:
     db.user.createIndex( { "email": 1 }, { unique: true } )
 
     db.user.insertMany([
-      { email: "festrela@email.com", password: '123456' }
+      { email: "festrela@email.com", password: 'VGVzdGUxMSE=', activated: true }
     ]);

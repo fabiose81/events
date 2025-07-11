@@ -29,15 +29,6 @@ const SignUp = () => {
         hasSpecialChar: false,
     });
 
-    useEffect(() => {
-        const params = { "email": email, "password": password, "repassword": repassword }
-        const result = emptyFieldsSignUp(params);
-
-        setButtonDisabled(!result.buttonDisabled);
-        setError(!result.equalPassword)
-        setStrength(result.strengthCriteria)
-    }, [email, password, repassword]);
-
     const actionSignUp = () => {
         setMessage(null);
         setShowModal(true);
@@ -50,6 +41,15 @@ const SignUp = () => {
                 setShowModal(false);
             });
     }
+
+    useEffect(() => {
+        const params = { "email": email, "password": password, "repassword": repassword }
+        const result = emptyFieldsSignUp(params);
+
+        setButtonDisabled(!result.buttonDisabled);
+        setError(!result.equalPassword)
+        setStrength(result.strengthCriteria)
+    }, [email, password, repassword]);
 
     return (
         <div>
