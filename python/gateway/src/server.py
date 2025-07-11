@@ -44,18 +44,21 @@ def active():
         return err
     
 @server.route("/event", methods=["POST"])
-def addEvent():     
-    response, err = event.addEvent(request)
+def addEvent():  
+    token, errToken = access.token(request) 
+    if not errToken:   
+        response, errEvent = event.addEvent(request)
 
-    if not err:
-        return response
+        if not errEvent:
+            return response
+        else:
+            return errEvent
     else:
-        return err
+        return errToken[0], errToken[1]     
     
 @server.route("/event", methods=["GET"])
-def getEvents():    
-    token, errToken = access.token(request)
-    
+def getEvents():     
+    token, errToken = access.token(request)       
     if not errToken:   
         response, errEvent = event.getEvents()
 
@@ -64,16 +67,20 @@ def getEvents():
         else:
             return errEvent
     else:
-        errToken
+        return errToken[0], errToken[1]    
     
 @server.route("/event", methods=["DELETE"])
-def deleteEvent():    
-    response, err = event.deleteEvent(request)
+def deleteEvent():   
+    token, errToken = access.token(request) 
+    if not errToken:   
+        response, errEvent = event.deleteEvent(request)
 
-    if not err:
-        return response
+        if not errEvent:
+            return response
+        else:
+            return errEvent
     else:
-        return err
+        return errToken[0], errToken[1]
     
 port = os.environ.get("SERVER_GATEWAY_PORT")
 if __name__ == "__main__":

@@ -18,7 +18,7 @@ def addEvent(request):
         return None, (response.text, response.status_code)
     
 def getEvents():
-
+    
     response = requests.get(
         f"http://{os.environ.get("AUTH_SVC_ADDRESS")}/event"
     )
