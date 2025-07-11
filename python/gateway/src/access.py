@@ -27,7 +27,7 @@ def token(request):
         return None, (constants.MISSING_CREDENTIALS, constants.HTTP_STATUS_UNAUTHORIZED)
 
     response = requests.post(
-        f"http://{os.environ.get("AUTH_SVC_ADDRESS")}/validate",
+        f"http://{os.environ.get("AUTH_SVC_ADDRESS")}/validate-token",
         headers = {
                 constants.AUTHORIZATION: token
             }

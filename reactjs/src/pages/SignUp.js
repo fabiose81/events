@@ -54,7 +54,7 @@ const SignUp = () => {
     return (
         <div>
             <ModalComponent showModal={showModal} />
-            <main className="main-content">
+            <main className="app-content">
                 <Alert variant="danger" hidden={message === null}>{message}</Alert>
                 <Form>
                     <Form.Group className="mb-3" controlId="formBasicEmail">

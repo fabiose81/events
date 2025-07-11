@@ -52,7 +52,7 @@ const Login = () => {
     return (
         <div>       
             <ModalComponent showModal={showModal} />
-            <main className="main-content">
+            <main className="app-content">
                  <Alert variant={message.variant} hidden={message.label === null}>{message.label}</Alert>
                 <Form>
                     <Form.Group className="mb-3" controlId="formBasicEmail">

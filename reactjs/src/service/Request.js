@@ -1,10 +1,9 @@
 import { Constants } from '../utils/Constants'
 
 export function login(username, password) {
-    const headers = getHeaders();
     const passwordEncoded = btoa(`${password}`);
     const credentials = btoa(`${username}:${passwordEncoded}`);
-    headers.append('Authorization', `Basic ${credentials}`);
+    const headers = getHeaders(`Basic ${credentials}`);
 
     const requestOptions = {
         method: 'POST',
@@ -33,7 +32,8 @@ export function signUp(username, password) {
 }
 
 export function getEvents() {
-    const headers = getHeaders();
+    const token = localStorage.getItem("token");
+    const headers = getHeaders(`Bearer ${token}`);
 
     const requestOptions = {
         method: 'GET',
@@ -44,7 +44,8 @@ export function getEvents() {
 }
 
 export function addEvent(description) {
-    const headers = getHeaders();
+    const token = localStorage.getItem("token");
+    const headers = getHeaders(`Bearer ${token}`);
 
     const body = {
         "description": description
@@ -60,7 +61,8 @@ export function addEvent(description) {
 }
 
 export function deleteEvent(id) {
-    const headers = getHeaders();
+    const token = localStorage.getItem("token");
+    const headers = getHeaders(`Bearer ${token}`);
 
     const body = {
         "id": id
@@ -94,12 +96,13 @@ const request = (path, requestOptions) => {
     });
 }
 
-const getHeaders = () => {
+const getHeaders = (authorization) => {
     const headers = new Headers();
     headers.append('Access-Control-Allow-Origin', '*');
     headers.append('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE, OPTIONS');
     headers.append('Content-Type', 'application/json');
     headers.append('Access-Control-Allow-Credentials', true);
+    headers.append('Authorization', authorization);
 
     return headers;
 }

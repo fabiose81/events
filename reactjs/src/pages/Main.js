@@ -6,6 +6,7 @@ import { MyContext } from '../utils/MyContext';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import Image from 'react-bootstrap/Image';
+import './Main.css'
 
 const Main = ({ children }) => {
 
@@ -34,19 +35,19 @@ const Main = ({ children }) => {
                 username
                 &&
                 <div>
-                    <Navbar className="bg-body-tertiary">
-
+                    <Navbar className="bg-body-tertiary justify-content-end">
                         <Navbar.Brand>{username}</Navbar.Brand>
                         <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                        <Nav className="justify-content-end">
+                        <Nav>
                             <Nav.Link href="/" onClick={() => {
                                 localStorage.setItem("token", "");
-                            }}><Image src="logout.png" style={{ width: "30px", height: "40px" }} />
+                            }}>
+                                <Image src="logout.png" style={{ width: "30px", height: "40px" }} />
                             </Nav.Link>
                         </Nav>
                     </Navbar>
                     <React.Fragment>
-                        <main className="app-content">
+                        <main className="main-content">
                             {children}
                         </main>
                     </React.Fragment>

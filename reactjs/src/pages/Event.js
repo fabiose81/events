@@ -6,6 +6,7 @@ import Form from 'react-bootstrap/Form';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import Button from 'react-bootstrap/Button';
+import Image from 'react-bootstrap/Image';
 import ModalComponent from '../components/ModalComponent'
 import { getEvents, addEvent, deleteEvent } from '../service/Request'
 import { setMessageState } from '../utils/UIUtils'
@@ -22,7 +23,7 @@ const Event = () => {
         label: '',
         variant: ''
     });
-    
+
     const loadEvents = () => {
         setShowModal(true);
         getEvents()
@@ -43,7 +44,6 @@ const Event = () => {
     const actionDeleteEvent = (event) => {
         setShowModal(true);
         const id = event.target.id
-
         parseResponse(deleteEvent(id))
     }
 
@@ -65,8 +65,8 @@ const Event = () => {
         if (contextValue.token) {
             loadEvents();
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <>
@@ -92,14 +92,19 @@ const Event = () => {
                         </ButtonGroup>
                     </ButtonToolbar>
                 </Form>
+                <br />
                 <ListGroup as="ol">
                     {
                         events.map((item, index) => (
-                            <ListGroup.Item key={index}>
-                                {item.description}
-                                <Button className="button" onClick={actionDeleteEvent} id={item._id.$oid}>
-                                    Delete
-                                </Button>
+                            <ListGroup.Item key={index} className="d-flex justify-content-between align-items-start">
+                                  <div className="ms-2 me-auto">                                 
+                                        {item.description}
+                                    </div>
+                                    <div>                                 
+                                         <Button onClick={actionDeleteEvent} style={{ backgroundColor: "transparent", border: "none" }}>
+                                            <Image src="recycle-bin.png" id={item._id.$oid} style={{ width: "32px", height: "32px" }}></Image>
+                                        </Button>
+                                    </div>
                             </ListGroup.Item>
                         ))
                     }
