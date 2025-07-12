@@ -79,8 +79,8 @@ export function deleteEvent(id) {
 
 const request = (path, requestOptions) => {
     return new Promise((resolve, reject) => {
-
-        fetch("http://localhost:8080/".concat(path), requestOptions)
+        const apiUrl = process.env.REACT_APP_API_URL;
+        fetch(apiUrl.concat(path), requestOptions)
             .then((response) => {
                 if (!response.ok) {
                     reject(response.text())
@@ -91,8 +91,8 @@ const request = (path, requestOptions) => {
             .then((result) => {
                 resolve(result)
             })
-            .catch((error) =>
-                reject(error));
+            .catch((error) => 
+                reject(error.message));
     });
 }
 

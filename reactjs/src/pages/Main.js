@@ -37,7 +37,6 @@ const Main = ({ children }) => {
                 <div>
                     <Navbar className="bg-body-tertiary justify-content-end">
                         <Navbar.Brand>{username}</Navbar.Brand>
-                        <Navbar.Toggle aria-controls="basic-navbar-nav" />
                         <Nav>
                             <Nav.Link href="/" onClick={() => {
                                 localStorage.setItem("token", "");
