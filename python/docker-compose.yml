@@ -1,34 +1,74 @@
 version: '3.8'
 
 services:
-  database:
+  mongo1:
     image: mongo:latest
-    container_name: database
+    container_name: mongo1
     ports:
-      - "7017:27017"
-    restart: unless-stopped
+      - 27017:27017
     environment:
       MONGO_INITDB_DATABASE: auth
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
     volumes:
-       - ./mongodb/auth_data:/data/db
-       - ./mongodb/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
-    networks:
-      - auth
-  
-  app:
-    build:
-      context: ./auth
-      dockerfile: Dockerfile
-    container_name: auth
-    ports:
-      - "5000:5000" 
-    depends_on:
-      - database
-    env_file:
-      - .env
-    networks:
-      - auth
+      - ./mongodb/mongo1-data:/data/db
 
-networks:
-  auth:
-    driver: bridge
+  mongo2:
+    image: mongo:latest
+    container_name: mongo2
+    ports:
+      - 27018:27017
+    environment:
+      MONGO_INITDB_DATABASE: auth
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
+    volumes:
+      - ./mongodb/mongo2-data:/data/db
+
+  mongo-setup:
+    image: mongo:latest
+    container_name: mongo-setup
+    depends_on:
+      - mongo1
+      - mongo2
+    entrypoint: >
+      bash -c "
+        echo 'Waiting for MongoDB to start...';
+        sleep 10;
+        mongosh --host mongo1:27017 --eval \"
+          rs.initiate({
+            _id: 'rs0',
+            members: [
+              { _id: 0, host: 'mongo1:27017' },
+              { _id: 1, host: 'mongo2:27017' }
+            ]
+          })
+        \" && 
+         sleep 15;
+        mongosh --host mongo1 --eval \"
+          const admin = db.getSiblingDB('admin');
+          admin.createUser({
+            user: 'admin',
+            pwd: 'admin',
+            roles: [{ role: 'root', db: 'admin' }]
+          });
+
+
+          const mydb = db.getSiblingDB('auth');
+
+          mydb.createUser({
+            user: 'admin',
+            pwd: 'admin',
+            roles: [{ role: 'readWrite', db: 'auth' }]
+          });
+
+          mydb.createCollection('user');
+          mydb.user.createIndex( { 'email': 1 }, { unique: true } )
+
+          mydb.user.insertOne({ email: 'festrela@email.com', password: 'VGVzdGUxMSE=', activated: true });
+        \"
+        echo 'Replica set initiated.'
+       "
+    restart: "no"
+
+volumes:
+  mongo1-data:
+  mongo2-data:

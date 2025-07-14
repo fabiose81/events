@@ -82,10 +82,12 @@ const request = (path, requestOptions) => {
         const apiUrl = process.env.REACT_APP_API_URL;
         fetch(apiUrl.concat(path), requestOptions)
             .then((response) => {
-                if (!response.ok) {
-                    reject(response.text())
-                } else {
+                if (response.status === 200 || response.status === 201) {
                     return response.text()
+                } else if (response.status === 500) {
+                    reject('Internal Error')
+                } else {
+                    reject(response.text())
                 }
             })
             .then((result) => {

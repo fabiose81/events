@@ -74,7 +74,7 @@ const Event = () => {
                 <Alert variant={message.variant} hidden={message.label === null}>{message.label}</Alert>
                 <Form>
                     <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Control placeholder="Description"
+                        <Form.Control placeholder="Enter your event"
                             value={description} onChange={(e) => {
                                 setDescription(e.target.value)
                                 const emptyField = e.target.value.trim().length > 0;

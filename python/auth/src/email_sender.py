@@ -28,4 +28,4 @@ def send(receiver_email, code_activation):
             server.sendmail(sender_email, receiver_email, message.as_string())
             return constants.EMAIL_SENT, None
     except Exception as e:
-        return None, f"{constants.AUTHORIZATION} : {e}"
+        return None, f"{constants.EMAIL_SEND_ERROR} : {e}"

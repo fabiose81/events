@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: auth
+  name: event
   labels:
-    app: auth
+    app: event
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: auth
+      app: event
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -16,15 +16,13 @@ spec:
   template:
     metadata:
       labels:
-        app: auth
+        app: event
     spec:
       containers:
-        - name: auth
-          image: fabiose81/auth
+        - name: event
+          image: fabiose81/event
           ports:
-            - containerPort: 5000
+            - containerPort: 3000
           envFrom:
             - configMapRef:
-                name: auth-configmap
-            - secretRef:
-                name: auth-secret
+                name: event-configmap

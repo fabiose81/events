@@ -5,6 +5,7 @@ from pymongo.collection import ReturnDocument
 from bson import ObjectId
 from dotenv import load_dotenv
 from datetime import datetime, timezone, timedelta
+import email_sender
 import constants
 
 load_dotenv()
@@ -14,39 +15,53 @@ server = Flask(__name__)
 db_user_name = os.environ.get("MONGODB_USERNAME")
 db_user_pwd = os.environ.get("MONGODB_PWD")
 db_host = os.environ.get("MONGODB_HOST")
-db_port = os.environ.get("MONGODB_PORT")
+db_port_replica1 = os.environ.get("MONGODB_PORT_REPLICA_1")
+db_port_replica2 = os.environ.get("MONGODB_PORT_REPLICA_2")
 db_name = os.environ.get("MONGODB_DB")
-mongo_uri = f"{db_user_name}:{db_user_pwd}@{db_host}:{db_port}/{db_name}"
+db_replica_set = os.environ.get("MONGODB_REPLICA_SET")
 
+mongo_uri = f"{db_user_name}:{db_user_pwd}@{db_host}:{db_port_replica1},{db_host}:{db_port_replica2}/{db_name}?{db_replica_set}"
 server.config["MONGO_URI"] = f"mongodb://{mongo_uri}"
 mongo = PyMongo(server)
 
+try:
+    mongo.cx.admin.command("ping")
+    print("✅ Connected to MongoDB")
+except Exception as e:
+      print("❌ MongoDB authentication failed:", e)
+    
 @server.route("/sign-up", methods=["POST"])
 def signUp():
     email = request.get_json()['email']
     password = request.get_json()['password']
     code_activation = request.get_json()['code_activation']
-   
-    try:      
-        user = mongo.db.user.find_one({
+       
+    user = mongo.db.user.find_one({
             "email":email
-        })
+    })
         
-        if user:
+    if user:
             return constants.EMAIL_ALREADY_EXISTS, constants.HTTP_STATUS_BAD_REQUEST
-        else:
-            user = { 
-                "email" : email, 
-                "password" : password,
-                "codeActivation" : code_activation,
-                "activated": False 
-            }
+    else:
+        user = { 
+            "email" : email, 
+            "password" : password,
+            "codeActivation" : code_activation,
+            "activated": False 
+        }
             
-            mongo.db.user.insert_one(user)
-            
-            return constants.USER_INSERTED, constants.HTTP_STATUS_CREATE
-    except Exception as e:
-        return e, constants.HTTP_STATUS_INTERNAL_SERVER_ERROR
+        with mongo.cx.start_session() as session:
+            with session.start_transaction():
+                try:
+                    mongo.db.user.insert_one(user, session=session)
+                    result, err = email_sender.send(email, code_activation) 
+                    if err: 
+                       session.abort_transaction() 
+                       return constants.USER_EXCEPTION, constants.HTTP_STATUS_BAD_REQUEST
+                   
+                    return constants.USER_INSERTED, constants.HTTP_STATUS_CREATE 
+                except Exception as e:
+                    return e, constants.HTTP_STATUS_INTERNAL_SERVER_ERROR
     
 @server.route("/activate-account", methods=["PUT"])
 def activateAccount():
@@ -67,7 +82,11 @@ def activateAccount():
                 }
             },
         return_document=ReturnDocument.AFTER)
-        return updated_document
+        
+        if (not updated_document):
+            return constants.ACCOUNT_ALREADY_ACTIVATED
+        else:
+            return constants.ACCOUNT_ACTIVATED
     except Exception as e:
         return e, constants.HTTP_STATUS_INTERNAL_SERVER_ERROR
     
@@ -79,7 +98,7 @@ def login():
     if not auth:
         return constants.MISSING_CREDENTIALS, constants.HTTP_STATUS_UNAUTHORIZED
     
-    try:      
+    try:    
         user = mongo.db.user.find_one({
             "email": auth.username
         })

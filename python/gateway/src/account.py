@@ -1,7 +1,6 @@
 import os, requests
 import uuid
 import constants
-import email_sender
 
 def signUp(request):
     email = request.get_json()["email"]
@@ -18,13 +17,8 @@ def signUp(request):
         f"http://{os.environ.get("AUTH_SVC_ADDRESS")}/sign-up", json=user
     )
     
-    if response.status_code == constants.HTTP_STATUS_OK:
-        email_response, err = email_sender.send(email, code_activation)
-        
-        if not err:
-            return response.text, None
-        else:
-            return None, (email_response, 400)
+    if response.status_code == constants.HTTP_STATUS_CREATE:      
+        return response.text, None
     else:
         return None, (response.text, response.status_code)
     
@@ -42,6 +36,6 @@ def activateAccount(request):
     )
     
     if response.status_code == constants.HTTP_STATUS_OK:
-        return constants.ACCOUNT_ACTIVATED, None
+        return response.text, None
     else:
         return None, (response.text, response.status_code)

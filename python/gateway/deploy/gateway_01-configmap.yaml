@@ -4,3 +4,8 @@ metadata:
   name: gateway-configmap
 data:
   AUTH_SVC_ADDRESS: "auth:5000"
+  SERVER_GATEWAY_PORT: "8080"
+  SENDER_EMAIL: "fabioestreladev81@gmail.com"
+  SMTP_SERVER: "smtp.gmail.com" 
+  SMTP_PORT: "587"
+  URI_VALIDATE_ACCOUNT: "http://localhost:8080/active?code=%c&email=%e"
