@@ -85,6 +85,7 @@ const request = (path, requestOptions) => {
                 if (response.status === 200 || response.status === 201) {
                     return response.text()
                 } else if (response.status === 500) {
+                    //to-do
                     reject('Internal Error')
                 } else {
                     reject(response.text())

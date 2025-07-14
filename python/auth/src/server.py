@@ -32,9 +32,9 @@ except Exception as e:
     
 @server.route("/sign-up", methods=["POST"])
 def signUp():
-    email = request.get_json()['email']
-    password = request.get_json()['password']
-    code_activation = request.get_json()['code_activation']
+    email = request.get_json()["email"]
+    password = request.get_json()["password"]
+    code_activation = request.get_json()["code_activation"]
        
     user = mongo.db.user.find_one({
             "email":email
@@ -65,8 +65,8 @@ def signUp():
     
 @server.route("/activate-account", methods=["PUT"])
 def activateAccount():
-    email = request.get_json()['email']
-    code_activation = request.get_json()['code_activation']
+    email = request.get_json()["email"]
+    code_activation = request.get_json()["code_activation"]
     
     try:
         updated_document = mongo.db.user.find_one_and_update(
@@ -125,14 +125,13 @@ def login():
 def addEvent():
     
     try:
-        # substituir pelo token
-        username = "festrela@email.com"  
+        username =  request.get_json()["username"]
         user = mongo.db.user.find_one({
             "email": username
         })
            
         if user:
-            description = request.get_json()['description']
+            description = request.get_json()["description"]
             mongo.db.event.insert_one({
                 "description": description,
                 "user": user["_id"]
@@ -143,13 +142,16 @@ def addEvent():
     except Exception as e:
         return e, constants.HTTP_STATUS_INTERNAL_SERVER_ERROR
     
-@server.route("/event", methods=["GET"])
-def getEvents():
-    
+@server.route("/event/<username>", methods=["GET"])
+def getEvents(username):
     try:
+        user = mongo.db.user.find_one({
+            "email": username
+        })
         events = []
-        for doc in mongo.db.event.find({}):
-            events.append(doc)
+        if user:         
+            for doc in mongo.db.event.find({"user": user["_id"]}):
+                events.append(doc)
                   
         return events
             
@@ -160,7 +162,7 @@ def getEvents():
 def deleteEvent():
     
     try:
-        id = request.get_json()['id']
+        id = request.get_json()["id"]
         mongo.db.event.find_one_and_delete(
             {
                 "_id":  ObjectId(id)

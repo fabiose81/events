@@ -1,4 +1,4 @@
-import os
+import os, json
 from dotenv import load_dotenv
 from flask import Flask, request
 from flask_cors import CORS 
@@ -47,7 +47,8 @@ def active():
 def addEvent():  
     token, errToken = access.token(request) 
     if not errToken:   
-        response, errEvent = event.addEvent(request)
+        username = json.loads(token)["username"]
+        response, errEvent = event.addEvent(request, username)
 
         if not errEvent:
             return response
@@ -60,7 +61,8 @@ def addEvent():
 def getEvents():     
     token, errToken = access.token(request)       
     if not errToken:   
-        response, errEvent = event.getEvents()
+        username = json.loads(token)["username"]
+        response, errEvent = event.getEvents(username)
 
         if not errEvent:
             return response

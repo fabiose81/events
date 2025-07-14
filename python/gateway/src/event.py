@@ -1,11 +1,12 @@
 import os, requests
 import constants
 
-def addEvent(request):
+def addEvent(request, username):
     description = request.get_json()["description"]
     
     event = {
-        "description": description
+        "description" : description,
+        "username" : username
     }
     
     response = requests.post(
@@ -17,10 +18,10 @@ def addEvent(request):
     else:
         return None, (response.text, response.status_code)
     
-def getEvents():
+def getEvents(username):
     
     response = requests.get(
-        f"http://{os.environ.get("AUTH_SVC_ADDRESS")}/event"
+        f"http://{os.environ.get("AUTH_SVC_ADDRESS")}/event/{username}"
     )
     
     if response.status_code == constants.HTTP_STATUS_OK:
