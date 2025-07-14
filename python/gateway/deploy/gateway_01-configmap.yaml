@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: gateway-configmap
 data:
-  AUTH_SVC_ADDRESS: "auth:5000"
+  SVC_ADDRESS: "service:5000"
   SERVER_GATEWAY_PORT: "8080"
   SENDER_EMAIL: "fabioestreladev81@gmail.com"
   SMTP_SERVER: "smtp.gmail.com" 

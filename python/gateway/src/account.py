@@ -14,7 +14,7 @@ def signUp(request):
     }
 
     response = requests.post(
-        f"http://{os.environ.get("AUTH_SVC_ADDRESS")}/sign-up", json=user
+        f"http://{os.environ.get("SVC_ADDRESS")}/sign-up", json=user
     )
     
     if response.status_code == constants.HTTP_STATUS_CREATE:      
@@ -32,7 +32,7 @@ def activateAccount(request):
     }
 
     response = requests.put(
-        f"http://{os.environ.get("AUTH_SVC_ADDRESS")}/activate-account", json=user
+        f"http://{os.environ.get("SVC_ADDRESS")}/activate-account", json=user
     )
     
     if response.status_code == constants.HTTP_STATUS_OK:

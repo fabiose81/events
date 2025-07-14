@@ -7,7 +7,7 @@ services:
     ports:
       - 27017:27017
     environment:
-      MONGO_INITDB_DATABASE: auth
+      MONGO_INITDB_DATABASE: service
     command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
     volumes:
       - ./mongodb/mongo1-data:/data/db
@@ -18,7 +18,7 @@ services:
     ports:
       - 27018:27017
     environment:
-      MONGO_INITDB_DATABASE: auth
+      MONGO_INITDB_DATABASE: service
     command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
     volumes:
       - ./mongodb/mongo2-data:/data/db
@@ -52,12 +52,12 @@ services:
           });
 
 
-          const mydb = db.getSiblingDB('auth');
+          const mydb = db.getSiblingDB('service');
 
           mydb.createUser({
             user: 'admin',
             pwd: 'admin',
-            roles: [{ role: 'readWrite', db: 'auth' }]
+            roles: [{ role: 'readWrite', db: 'service' }]
           });
 
           mydb.createCollection('user');

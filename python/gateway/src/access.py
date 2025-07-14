@@ -9,7 +9,7 @@ def login(request):
     basicAuth = (auth.username, auth.password)
     
     response = requests.post(
-        f"http://{os.environ.get("AUTH_SVC_ADDRESS")}/login", auth=basicAuth
+        f"http://{os.environ.get("SVC_ADDRESS")}/login", auth=basicAuth
     )
     
     if response.status_code == constants.HTTP_STATUS_OK:
@@ -27,7 +27,7 @@ def token(request):
         return None, (constants.MISSING_CREDENTIALS, constants.HTTP_STATUS_UNAUTHORIZED)
 
     response = requests.post(
-        f"http://{os.environ.get("AUTH_SVC_ADDRESS")}/validate-token",
+        f"http://{os.environ.get("SVC_ADDRESS")}/validate-token",
         headers = {
                 constants.AUTHORIZATION: token
             }

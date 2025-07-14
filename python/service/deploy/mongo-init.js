@@ -1,11 +1,11 @@
-db = db.getSiblingDB('auth');
+db = db.getSiblingDB('service');
 
 db.createUser({
     user: "admin",
     pwd: "admin",
     roles: [{
         role: "readWrite",
-        db: "auth"
+        db: "service"
     }]
 });
 

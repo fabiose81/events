@@ -10,7 +10,7 @@ def addEvent(request, username):
     }
     
     response = requests.post(
-        f"http://{os.environ.get("AUTH_SVC_ADDRESS")}/event", json=event
+        f"http://{os.environ.get("SVC_ADDRESS")}/event", json=event
     )
     
     if response.status_code == constants.HTTP_STATUS_OK:
@@ -21,7 +21,7 @@ def addEvent(request, username):
 def getEvents(username):
     
     response = requests.get(
-        f"http://{os.environ.get("AUTH_SVC_ADDRESS")}/event/{username}"
+        f"http://{os.environ.get("SVC_ADDRESS")}/event/{username}"
     )
     
     if response.status_code == constants.HTTP_STATUS_OK:
@@ -37,7 +37,7 @@ def deleteEvent(request):
     }
 
     response = requests.delete(
-        f"http://{os.environ.get("AUTH_SVC_ADDRESS")}/event", json=event
+        f"http://{os.environ.get("SVC_ADDRESS")}/event", json=event
     )
     
     if response.status_code == constants.HTTP_STATUS_OK:

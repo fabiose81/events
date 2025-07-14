@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: auth
+  name: service
 spec:
   selector:
-    app: auth
+    app: service
   ports:
   - protocol: "TCP"
     port: 5000

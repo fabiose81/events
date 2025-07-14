@@ -1,37 +1,12 @@
 import jwt, os
-from flask import Flask, request
-from flask_pymongo import PyMongo
+from flask import request
 from pymongo.collection import ReturnDocument
-from bson import ObjectId
-from dotenv import load_dotenv
 from datetime import datetime, timezone, timedelta
-import email_sender
 import constants
 
-load_dotenv()
+import email_sender
 
-server = Flask(__name__)
-
-db_user_name = os.environ.get("MONGODB_USERNAME")
-db_user_pwd = os.environ.get("MONGODB_PWD")
-db_host = os.environ.get("MONGODB_HOST")
-db_port_replica1 = os.environ.get("MONGODB_PORT_REPLICA_1")
-db_port_replica2 = os.environ.get("MONGODB_PORT_REPLICA_2")
-db_name = os.environ.get("MONGODB_DB")
-db_replica_set = os.environ.get("MONGODB_REPLICA_SET")
-
-mongo_uri = f"{db_user_name}:{db_user_pwd}@{db_host}:{db_port_replica1},{db_host}:{db_port_replica2}/{db_name}?{db_replica_set}"
-server.config["MONGO_URI"] = f"mongodb://{mongo_uri}"
-mongo = PyMongo(server)
-
-try:
-    mongo.cx.admin.command("ping")
-    print("✅ Connected to MongoDB")
-except Exception as e:
-      print("❌ MongoDB authentication failed:", e)
-    
-@server.route("/sign-up", methods=["POST"])
-def signUp():
+def signUp(mongo):
     email = request.get_json()["email"]
     password = request.get_json()["password"]
     code_activation = request.get_json()["code_activation"]
@@ -62,9 +37,8 @@ def signUp():
                     return constants.USER_INSERTED, constants.HTTP_STATUS_CREATE 
                 except Exception as e:
                     return e, constants.HTTP_STATUS_INTERNAL_SERVER_ERROR
-    
-@server.route("/activate-account", methods=["PUT"])
-def activateAccount():
+                
+def activateAccount(mongo):
     email = request.get_json()["email"]
     code_activation = request.get_json()["code_activation"]
     
@@ -90,9 +64,7 @@ def activateAccount():
     except Exception as e:
         return e, constants.HTTP_STATUS_INTERNAL_SERVER_ERROR
     
-
-@server.route("/login", methods=["POST"])
-def login():
+def login(mongo):
     auth = request.authorization
 
     if not auth:
@@ -120,61 +92,19 @@ def login():
             return constants.INVALID_CREDENTIALS, constants.HTTP_STATUS_UNAUTHORIZED
     except Exception as e:
         return e, constants.HTTP_STATUS_INTERNAL_SERVER_ERROR
+    
+def createJWT(username, secret, authz):
+    return jwt.encode(
+        {
+            "username": username,
+            "exp": datetime.now(timezone.utc) + timedelta(days=1),
+            "iat": datetime.now(timezone.utc),
+            "admin": authz
+        },
+        secret,
+        algorithm="HS256"   
+    )
 
-@server.route("/event", methods=["POST"])
-def addEvent():
-    
-    try:
-        username =  request.get_json()["username"]
-        user = mongo.db.user.find_one({
-            "email": username
-        })
-           
-        if user:
-            description = request.get_json()["description"]
-            mongo.db.event.insert_one({
-                "description": description,
-                "user": user["_id"]
-            })
-            
-            return constants.EVENT_INSERTED, constants.HTTP_STATUS_CREATE
-            
-    except Exception as e:
-        return e, constants.HTTP_STATUS_INTERNAL_SERVER_ERROR
-    
-@server.route("/event/<username>", methods=["GET"])
-def getEvents(username):
-    try:
-        user = mongo.db.user.find_one({
-            "email": username
-        })
-        events = []
-        if user:         
-            for doc in mongo.db.event.find({"user": user["_id"]}):
-                events.append(doc)
-                  
-        return events
-            
-    except Exception as e:
-        return e, constants.HTTP_STATUS_INTERNAL_SERVER_ERROR
-    
-@server.route("/event", methods=["DELETE"])
-def deleteEvent():
-    
-    try:
-        id = request.get_json()["id"]
-        mongo.db.event.find_one_and_delete(
-            {
-                "_id":  ObjectId(id)
-            }
-        )        
-                  
-        return constants.EVENT_DELETED, constants.HTTP_STATUS_OK
-            
-    except Exception as e:
-        return e, constants.HTTP_STATUS_INTERNAL_SERVER_ERROR
-    
-@server.route("/validate-token", methods=["POST"])
 def validateToken():
     encoded_jwt = request.headers["Authorization"]
     
@@ -191,19 +121,3 @@ def validateToken():
         return constants.NOT_AUTHORIZED, constants.HTTP_STATUS_FORBIDDEN
     
     return decoded, constants.HTTP_STATUS_OK
- 
-def createJWT(username, secret, authz):
-    return jwt.encode(
-        {
-            "username": username,
-            "exp": datetime.now(timezone.utc) + timedelta(days=1),
-            "iat": datetime.now(timezone.utc),
-            "admin": authz
-        },
-        secret,
-        algorithm="HS256"   
-    )
-    
-port = os.environ.get("SERVER_AUTH_PORT")
-if __name__ == "__main__":
-    server.run(debug=True, host="0.0.0.0", port=port)

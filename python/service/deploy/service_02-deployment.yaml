@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: auth
+  name: service
   labels:
-    app: auth
+    app: service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: auth
+      app: service
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -16,15 +16,15 @@ spec:
   template:
     metadata:
       labels:
-        app: auth
+        app: service
     spec:
       containers:
-        - name: auth
-          image: fabiose81/auth
+        - name: service
+          image: fabiose81/service
           ports:
             - containerPort: 5000
           envFrom:
             - configMapRef:
-                name: auth-configmap
+                name: service-configmap
             - secretRef:
-                name: auth-secret
+                name: service-secret
