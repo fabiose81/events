@@ -1,6 +1,6 @@
 ![alt text](https://github.com/fabiose81/events/blob/master/events.jpg?raw=true)
 
-### For Kubernetes
+### To run applications by Kubernetes
     service/deploy/service_configmap.yaml
         SENDER_EMAIL: "set your email"
       
