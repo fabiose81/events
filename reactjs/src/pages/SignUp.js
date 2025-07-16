@@ -88,7 +88,7 @@ const SignUp = () => {
                     </ul>
 
                     <Form.Group className="mb-3" controlId="formBasicRePassword">
-                        <Form.Control type="password" placeholder="Repeate Password"
+                        <Form.Control type="password" placeholder="Repeat Password"
                             value={repassword} onChange={(e) => setRePassword(e.target.value)}
                             required />
                     </Form.Group>
