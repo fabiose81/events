@@ -51,7 +51,7 @@ const Login = () => {
 
     return (
         <div>       
-            <ModalComponent showModal={showModal} />
+            <ModalComponent showModal={showModal} label="logging in"/>
             <main className="app-content">
                  <Alert variant={message.variant} hidden={message.label === null}>{message.label}</Alert>
                 <Form>

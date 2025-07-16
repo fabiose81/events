@@ -53,7 +53,7 @@ const SignUp = () => {
 
     return (
         <div>
-            <ModalComponent showModal={showModal} />
+            <ModalComponent showModal={showModal} label="saving"/>
             <main className="app-content">
                 <Alert variant="danger" hidden={message === null}>{message}</Alert>
                 <Form>

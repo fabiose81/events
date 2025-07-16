@@ -18,6 +18,7 @@ const Event = () => {
     const [events, setEvents] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [description, setDescription] = useState('');
+    const [actionEvent, setActionEvent] = useState('');
     const [buttonDisabled, setButtonDisabled] = useState(true)
     const [message, setMessage] = useState({
         label: '',
@@ -25,6 +26,7 @@ const Event = () => {
     });
 
     const loadEvents = () => {
+        setActionEvent('loading events')
         setShowModal(true);
         getEvents()
             .then(result => {
@@ -37,11 +39,13 @@ const Event = () => {
     }
 
     const actionAddEvent = () => {
+        setActionEvent('saving')
         setShowModal(true);
         parseResponse(addEvent(description))
     }
 
     const actionDeleteEvent = (event) => {
+        setActionEvent('deleting')
         setShowModal(true);
         const id = event.target.id
         parseResponse(deleteEvent(id))
@@ -109,7 +113,7 @@ const Event = () => {
                         ))
                     }
                 </ListGroup>
-                <ModalComponent showModal={showModal} />
+                <ModalComponent showModal={showModal} label={actionEvent} />
             </Main>
         </>
     )
