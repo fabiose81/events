@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gateway-configmap
+data:
+  SVC_ADDRESS: "service:5000"
+  SERVER_GATEWAY_PORT: "8080"

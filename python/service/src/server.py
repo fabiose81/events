@@ -14,13 +14,11 @@ server = Flask(__name__)
 
 db_user_name = os.environ.get("MONGODB_USERNAME")
 db_user_pwd = os.environ.get("MONGODB_PWD")
-db_host = os.environ.get("MONGODB_HOST")
-db_port_replica1 = os.environ.get("MONGODB_PORT_REPLICA_1")
-db_port_replica2 = os.environ.get("MONGODB_PORT_REPLICA_2")
+db_hosts_ports = os.environ.get("MONGODB_HOSTS_PORTS")
 db_name = os.environ.get("MONGODB_DB")
 db_replica_set = os.environ.get("MONGODB_REPLICA_SET")
 
-mongo_uri = f"{db_user_name}:{db_user_pwd}@{db_host}:{db_port_replica1},{db_host}:{db_port_replica2}/{db_name}?{db_replica_set}"
+mongo_uri = f"{db_user_name}:{db_user_pwd}@{db_hosts_ports}/{db_name}?{db_replica_set}"
 server.config["MONGO_URI"] = f"mongodb://{mongo_uri}"
 mongo = PyMongo(server)
 

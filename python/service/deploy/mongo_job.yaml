@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mongo-init
+spec:
+  template:
+    spec:
+      containers:
+        - name: mongo-init
+          image: mongo:6.0
+          command: ["mongosh", "--host", "mongo-0.mongo", "/init/init.js"]
+          volumeMounts:
+            - name: init-script
+              mountPath: /init
+      volumes:
+        - name: init-script
+          configMap:
+            name: mongo-init-script
+
+      restartPolicy: OnFailure

@@ -1,10 +1,12 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: gateway-configmap
+  name: service-configmap
 data:
-  SVC_ADDRESS: "service:5000"
-  SERVER_GATEWAY_PORT: "8080"
+  MONGODB_HOSTS_PORTS: "mongo-0.mongo:27017,mongo-1.mongo:27017"
+  MONGODB_USERNAME: admin
+  MONGODB_DB: service
+  MONGODB_REPLICA_SET: "replicaSet=rs0"
   SENDER_EMAIL: "fabioestreladev81@gmail.com"
   SMTP_SERVER: "smtp.gmail.com" 
   SMTP_PORT: "587"
