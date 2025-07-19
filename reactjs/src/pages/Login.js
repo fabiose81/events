@@ -51,28 +51,28 @@ const Login = () => {
 
     return (
         <div>       
-            <ModalComponent showModal={showModal} label="logging in"/>
+            <ModalComponent data-testid="modal" showModal={showModal} label="logging in"/>
             <main className="app-content">
-                 <Alert variant={message.variant} hidden={message.label === null}>{message.label}</Alert>
+                 <Alert data-testid="alert" variant={message.variant} hidden={message.label === null}>{message.label}</Alert>
                 <Form>
                     <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Control type="email" placeholder="Email"
+                        <Form.Control data-testid="email" type="email" placeholder="Email"
                             value={email} onChange={(e) => setEmail(e.target.value)}
                             required />
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicPassword">
-                        <Form.Control type="password" placeholder="Password"
+                        <Form.Control data-testid="password" type="password" placeholder="Password"
                             value={password} onChange={(e) => setPassword(e.target.value)}
                             required />
                     </Form.Group>
                     <ButtonToolbar>
                         <ButtonGroup className="me-2">
-                            <Button className="button" onClick={actionLogin} disabled={buttonDisabled}>Login</Button>
+                            <Button data-testid="buttonLogin" className="button" onClick={actionLogin} disabled={buttonDisabled}>Login</Button>
                         </ButtonGroup>
                         <ButtonGroup className="me-2">
                             <Nav.Link href="/sign-up">
-                                <Button className="button" variant="success">
+                                <Button data-testid="signUp" className="button" variant="success">
                                     Sign Up
                                 </Button>
                             </Nav.Link>

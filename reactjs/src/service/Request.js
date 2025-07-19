@@ -9,7 +9,6 @@ export function login(username, password) {
         method: 'POST',
         headers: headers
     };
-
     return request(Constants.LOGIN, requestOptions);
 }
 

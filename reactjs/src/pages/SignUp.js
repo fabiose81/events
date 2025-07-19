@@ -58,13 +58,13 @@ const SignUp = () => {
                 <Alert variant="danger" hidden={message === null}>{message}</Alert>
                 <Form>
                     <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Control type="email" placeholder="Email"
+                        <Form.Control data-testid="email" type="email" placeholder="Email"
                             value={email} onChange={(e) => setEmail(e.target.value)}
                             required />
                     </Form.Group>
 
                     <Form.Group className="mb-3" controlId="formBasicPassword">
-                        <Form.Control type="password" placeholder="Password"
+                        <Form.Control data-testid="password" type="password" placeholder="Password"
                             value={password} onChange={(e) => setPassword(e.target.value)}
                             required />
                     </Form.Group>
@@ -88,7 +88,7 @@ const SignUp = () => {
                     </ul>
 
                     <Form.Group className="mb-3" controlId="formBasicRePassword">
-                        <Form.Control type="password" placeholder="Repeat Password"
+                        <Form.Control data-testid="repassword" type="password" placeholder="Repeat Password"
                             value={repassword} onChange={(e) => setRePassword(e.target.value)}
                             required />
                     </Form.Group>
@@ -100,7 +100,7 @@ const SignUp = () => {
                     }
                     <ButtonToolbar>
                         <ButtonGroup className="me-2">
-                            <Button className="button" onClick={actionSignUp} disabled={buttonDisabled}>
+                            <Button data-testid="buttonSave" className="button" onClick={actionSignUp} disabled={buttonDisabled}>
                                 Save
                             </Button>
                         </ButtonGroup>

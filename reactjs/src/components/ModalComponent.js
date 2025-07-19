@@ -7,7 +7,7 @@ const ModalComponent = (props) => {
     const label = props.label;
 
     return (
-        <div>
+        <div data-testid="modal">
             <Modal show={showModal} centered>
                 <Modal.Body style={{ height: "205px" }}>
                     <div style={{ height: "175px", }} className="center">

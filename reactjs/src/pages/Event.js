@@ -78,7 +78,7 @@ const Event = () => {
                 <Alert variant={message.variant} hidden={message.label === null}>{message.label}</Alert>
                 <Form>
                     <Form.Group className="mb-3" controlId="formBasicEmail">
-                        <Form.Control placeholder="Enter your event"
+                        <Form.Control data-testid="eventDescription" placeholder="Enter your event"
                             value={description} onChange={(e) => {
                                 setDescription(e.target.value)
                                 const emptyField = e.target.value.trim().length > 0;
@@ -90,7 +90,7 @@ const Event = () => {
                     </Form.Group>
                     <ButtonToolbar>
                         <ButtonGroup className="me-2">
-                            <Button className="button" onClick={actionAddEvent} disabled={buttonDisabled}>
+                            <Button data-testid="buttonAddEvent" className="button" onClick={actionAddEvent} disabled={buttonDisabled}>
                                 Save
                             </Button>
                         </ButtonGroup>

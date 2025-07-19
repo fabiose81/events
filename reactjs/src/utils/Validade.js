@@ -40,7 +40,7 @@ export const emptyFieldsSignUp = (params) => {
 
 export const validateToken = () => {
         const token = localStorage.getItem("token");
-        if (token === "") {
+        if (token === null || token === "") {
             return null;
         } else {
             const tokenDecoded = jwtDecode(token);

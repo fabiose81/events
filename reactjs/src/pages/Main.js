@@ -13,7 +13,7 @@ const Main = ({ children }) => {
     const contextValue = useContext(MyContext);
     const navigate = useNavigate();
     const [username, setUsername] = useState();
-    
+
     const loadUser = () => {
         const token = validateToken();
         if (token) {
@@ -26,32 +26,28 @@ const Main = ({ children }) => {
 
     useEffect(() => {
         loadUser();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
         <>
-            {
-                username
-                &&
-                <div>
-                    <Navbar className="bg-body-tertiary justify-content-end">
-                        <Navbar.Brand>{username}</Navbar.Brand>
-                        <Nav>
-                            <Nav.Link href="/" onClick={() => {
-                                localStorage.setItem("token", "");
-                            }}>
-                                <Image src="logout.png" style={{ width: "30px", height: "40px" }} />
-                            </Nav.Link>
-                        </Nav>
-                    </Navbar>
-                    <React.Fragment>
-                        <main className="main-content">
-                            {children}
-                        </main>
-                    </React.Fragment>
-                </div>
-            }
+            <div>
+                <Navbar data-testid="navbar" className="bg-body-tertiary justify-content-end">
+                    <Navbar.Brand>{username}</Navbar.Brand>
+                    <Nav>
+                        <Nav.Link href="/" onClick={() => {
+                            localStorage.setItem("token", "");
+                        }}>
+                            <Image src="logout.png" style={{ width: "30px", height: "40px" }} />
+                        </Nav.Link>
+                    </Nav>
+                </Navbar>
+                <React.Fragment>
+                    <main className="main-content">
+                        {children}
+                    </main>
+                </React.Fragment>
+            </div>
         </>
     );
 }
