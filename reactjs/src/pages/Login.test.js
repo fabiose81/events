@@ -6,10 +6,6 @@ jest.mock('react-router-dom', () => ({
     useSearchParams: () => [new URLSearchParams(), jest.fn()],
 }));
 
-beforeAll(() => {
-    process.env.REACT_APP_API_URL = 'http://localhost:8080/'
-});
-
 afterEach(() => {
     jest.resetAllMocks();
 });
