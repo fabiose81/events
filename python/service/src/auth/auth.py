@@ -66,7 +66,7 @@ def activateAccount(mongo):
     
 def login(mongo):
     auth = request.authorization
-
+    
     if not auth:
         return constants.MISSING_CREDENTIALS, constants.HTTP_STATUS_UNAUTHORIZED
     

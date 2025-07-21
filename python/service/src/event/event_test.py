@@ -6,10 +6,14 @@ from bson import ObjectId
 import pytest
 from unittest.mock import MagicMock, patch
 
-from flask import Flask, request
+from flask import Flask
 
 import constants 
 import event
+
+USERNAME = 'user@email.com'
+EVENT_DESCRIPTION = 'Go to gym'
+EVENT_DESCRIPTION_2 = 'Clear home'
 
 @pytest.fixture
 def client():
@@ -19,19 +23,19 @@ def client():
 
 def test_get_events_success():
     user_id = ObjectId("64cfe82420aee5a5d205c1b7")
-    mock_user = {"_id": user_id, "email": "user@example.com"}
+    mock_user = {"_id": user_id, "email": USERNAME}
     mock_events = [
-        {"_id": ObjectId(), "description": "Go to gum", "user": user_id},
-        {"_id": ObjectId(), "description": "Clear home", "user": user_id}
+        {"_id": ObjectId(), "description": EVENT_DESCRIPTION, "user": user_id},
+        {"_id": ObjectId(), "description": EVENT_DESCRIPTION_2, "user": user_id}
     ]
     
     mongo = MagicMock()
     mongo.db.user.find_one.return_value = mock_user
     mongo.db.event.find.return_value = mock_events
     
-    result = event.getEvents(mongo, "user@example.com")
+    result = event.getEvents(mongo, USERNAME)
     
-    mongo.db.user.find_one.assert_called_once_with({"email": "user@example.com"})
+    mongo.db.user.find_one.assert_called_once_with({"email": USERNAME})
     mongo.db.event.find.assert_called_once_with({"user": user_id})
     
     assert result == mock_events
@@ -40,8 +44,8 @@ def test_get_events_success():
 def test_add_event(client):
     with patch('event.request') as mock_request:
         mock_request.get_json = MagicMock(return_value={
-            "username": "user@example.com",
-            "description": "Go to gym"
+            "username": USERNAME,
+            "description": EVENT_DESCRIPTION
         })
        
         mongo = MagicMock()
@@ -49,7 +53,7 @@ def test_add_event(client):
         mongo.db.user.find_one.return_value = mock_user
         
         mongo.db.event.insert_one({
-            "description": "Go to gym",
+            "description": EVENT_DESCRIPTION,
             "user": "687c5a03e08ff16febff0da8"
         })
         
